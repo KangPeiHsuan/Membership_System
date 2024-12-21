@@ -14,3 +14,8 @@
 - 使用 nodemon 監控檔案變化
 - 使用 express-generator 快速生成 Express 專案
 - 使用 postman 測試路由
+
+### .env 設定
+- .env.example 是 .env 的範例檔案，請複製一份並命名為 .env
+- 在 .env 檔案中設定 JWT_SECRET，用於生成 JWT 令牌
+- 在 .env 檔案中設定 DB_NAME, DB_USER, DB_PASSWORD，用於連接 MySQL 資料庫
