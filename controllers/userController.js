@@ -43,7 +43,7 @@ exports.login = async (req, res) => {
         }
 
         const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '40m' });
-        res.status(200).json({ token, userId: user.id, email: user.email });
+        res.status(200).json({ message: '登入成功', token, userId: user.id, email: user.email });
     } catch (error) {
         res.status(500).json({ message: '登入失敗', error });
     }
@@ -104,7 +104,15 @@ exports.updateUserProfile = async (req, res) => {
         user.email = email;
         await user.save();
 
-        res.status(200).json(user);
+        const userDTO = {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt
+        };
+
+        res.status(200).json(userDTO);
     } catch (error) {
         res.status(500).json({ message: '更新用戶資料失敗', error });
     }
@@ -117,6 +125,15 @@ exports.updateUserPassword = async (req, res) => {
 
     try {
         const user = await User.findByPk(userId);
+        if (!user) {
+            return res.status(404).json({ message: '用戶不存在' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({ message: '更新用戶密碼成功' });
     } catch (error) {
         res.status(500).json({ message: '更新用戶密碼失敗', error });
     }
